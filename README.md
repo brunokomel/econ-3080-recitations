@@ -1,4 +1,2 @@
-# econ_3080_recitations
+# econ-3080-recitations
 Data and script files for recitations. 
-
-## Test 2
