@@ -1,0 +1,11 @@
+	(1)	(2)	(3)	(4)	(5)	(6)
+VARIABLES	prop_registered_votes_top2_R2	prop_registered_votes_top2_R2	prop_registered_votes_top2_R2	prop_registered_votes_top2_R2	prop_registered_votes_top2_R2	prop_registered_votes_top2_R2
+						
+RD_Estimate	-0.053	-0.096	-0.078	-0.086	-0.061	-0.112
+	(0.026)	(0.028)	(0.021)	(0.027)	(0.020)	(0.024)
+						
+Observations	264	239	239	263	350	295
+Robust p-value	0.130	0.001	0.003	0.003	0.006	0.000
+Polyn. order	1.000	1.000	1.000	1.000	1.000	1.000
+Bandwidth	0.011	0.017	0.011	0.016	0.017	0.015
+Outcome mean	0.534	0.512	0.528	0.526	0.523	0.528

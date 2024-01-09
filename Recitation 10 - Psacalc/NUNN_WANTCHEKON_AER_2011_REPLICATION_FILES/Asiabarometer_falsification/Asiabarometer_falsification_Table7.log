@@ -1,0 +1,100 @@
+---------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\My Dropbox\Afrobarometer\NUNN_WANTCHEKON_AER_2011_REPLICATION_FILES\Asiabarometer_falsification\Asiabarometer_fal
+> sification_Table7.log
+  log type:  text
+ opened on:  16 Nov 2010, 11:14:17
+
+. 
+. ***************************
+. *** Table 7, Cols 3 & 4 ***
+. ***************************
+. 
+. xi: reg trust_local_govt distance_coast i.COUNTRY if missing(age)!=1 & missing(male)!=1 & missing(education)!=1 & missing(relig
+> ion)!=1, cluster(distance_coast)
+i.COUNTRY         _ICOUNTRY_2-10      (naturally coded; _ICOUNTRY_2 omitted)
+note: _ICOUNTRY_6 omitted because of collinearity
+note: _ICOUNTRY_7 omitted because of collinearity
+
+Linear regression                                      Number of obs =    5409
+                                                       F(  7,    61) =   61.43
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.1893
+                                                       Root MSE      =  .79417
+
+                        (Std. Err. adjusted for 62 clusters in distance_coast)
+------------------------------------------------------------------------------
+             |               Robust
+trust_loca~t |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+distance_c~t |  -.0000119   .0001009    -0.12   0.907    -.0002136    .0001899
+ _ICOUNTRY_3 |   .8997373   .0782327    11.50   0.000     .7433014    1.056173
+ _ICOUNTRY_4 |   1.202477   .0849687    14.15   0.000     1.032572    1.372382
+ _ICOUNTRY_5 |   .6365888   .0835199     7.62   0.000     .4695805    .8035972
+ _ICOUNTRY_6 |  (omitted)
+ _ICOUNTRY_7 |  (omitted)
+ _ICOUNTRY_8 |   .6723372   .1062904     6.33   0.000     .4597964     .884878
+ _ICOUNTRY_9 |   .2860508   .0751884     3.80   0.000     .1357022    .4363993
+_ICOUNTRY_10 |   .2794255   .2020623     1.38   0.172     -.124623    .6834741
+       _cons |   1.100648   .0690527    15.94   0.000      .962569    1.238728
+------------------------------------------------------------------------------
+
+. xi: reg trust_local_govt distance_coast age* male i.education i.religion i.COUNTRY, cluster(distance_coast)
+i.education       _Ieducation_1-6     (naturally coded; _Ieducation_1 omitted)
+i.religion        _Ireligion_1-13     (naturally coded; _Ireligion_1 omitted)
+i.COUNTRY         _ICOUNTRY_2-10      (naturally coded; _ICOUNTRY_2 omitted)
+note: _Ireligion_9 omitted because of collinearity
+note: _ICOUNTRY_6 omitted because of collinearity
+note: _ICOUNTRY_7 omitted because of collinearity
+
+Linear regression                                      Number of obs =    5409
+                                                       F( 25,    61) =       .
+                                                       Prob > F      =       .
+                                                       R-squared     =  0.2183
+                                                       Root MSE      =  .78121
+
+                        (Std. Err. adjusted for 62 clusters in distance_coast)
+------------------------------------------------------------------------------
+             |               Robust
+trust_loca~t |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+distance_c~t |   7.22e-06   .0000919     0.08   0.938    -.0001765     .000191
+         age |  -.0081748   .0078603    -1.04   0.302    -.0238925    .0075429
+        age2 |   .0001209   .0001034     1.17   0.247    -.0000859    .0003277
+        male |  -.0531745    .023002    -2.31   0.024    -.0991699   -.0071791
+_Ieducatio~2 |   .0650504   .1092976     0.60   0.554    -.1535037    .2836045
+_Ieducatio~3 |  -.0062502   .1091184    -0.06   0.955    -.2244459    .2119456
+_Ieducatio~4 |   .0347244   .1065413     0.33   0.746    -.1783181    .2477669
+_Ieducatio~5 |   -.095915   .1106318    -0.87   0.389    -.3171369     .125307
+_Ieducatio~6 |  -.0999833   .1201496    -0.83   0.409    -.3402373    .1402707
+_Ireligion_2 |  -.2034865   .0771082    -2.64   0.011    -.3576739   -.0492991
+_Ireligion_3 |   .2959254     .07201     4.11   0.000     .1519325    .4399183
+_Ireligion_4 |  -.1161258   .1024812    -1.13   0.262    -.3210496     .088798
+_Ireligion_5 |   .2332181   .0881332     2.65   0.010     .0569848    .4094514
+_Ireligion_6 |  -.0981378   .0789966    -1.24   0.219    -.2561014    .0598257
+_Ireligion_7 |  -.0506172   .1073536    -0.47   0.639    -.2652841    .1640496
+_Ireligion_8 |  -.2182049   .2024441    -1.08   0.285    -.6230169    .1866071
+_Ireligion_9 |  (omitted)
+_Ireligio~10 |   .1015666   .1050697     0.97   0.338    -.1085332    .3116664
+_Ireligio~11 |  -.2371565   .1147877    -2.07   0.043    -.4666887   -.0076243
+_Ireligio~12 |  -.3278352   .1607349    -2.04   0.046    -.6492445   -.0064259
+_Ireligio~13 |  -.1622573   .0758085    -2.14   0.036    -.3138458   -.0106688
+ _ICOUNTRY_3 |   .8807295   .0805443    10.93   0.000     .7196712    1.041788
+ _ICOUNTRY_4 |   .8597167   .1025244     8.39   0.000     .6547064    1.064727
+ _ICOUNTRY_5 |   .5626986   .1024005     5.50   0.000     .3579362     .767461
+ _ICOUNTRY_6 |  (omitted)
+ _ICOUNTRY_7 |  (omitted)
+ _ICOUNTRY_8 |   .3045849   .1140857     2.67   0.010     .0764565    .5327133
+ _ICOUNTRY_9 |   .1309364   .0839128     1.56   0.124    -.0368577    .2987305
+_ICOUNTRY_10 |  -.0139638   .1844919    -0.08   0.940    -.3828781    .3549505
+       _cons |   1.427814    .194105     7.36   0.000     1.039677     1.81595
+------------------------------------------------------------------------------
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\My Dropbox\Afrobarometer\NUNN_WANTCHEKON_AER_2011_REPLICATION_FILES\Asiabarometer_falsification\Asiabarometer_fal
+> sification_Table7.log
+  log type:  text
+ closed on:  16 Nov 2010, 11:14:18
+---------------------------------------------------------------------------------------------------------------------------------

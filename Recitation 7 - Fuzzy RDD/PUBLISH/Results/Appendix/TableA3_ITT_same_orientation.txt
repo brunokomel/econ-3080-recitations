@@ -1,0 +1,11 @@
+	(1)	(2)	(3)	(4)	(5)
+VARIABLES	prop_registered_turnout_R2	prop_registered_blanknull_R2	prop_registered_candvotes_R2	prop_registered_votes_top2_R2	winner_closest
+					
+RD_Estimate	-0.015	-0.004	-0.010	-0.023	0.022
+	(0.019)	(0.003)	(0.020)	(0.020)	(0.068)
+					
+Observations	687	824	690	718	820
+Robust p-value	0.398	0.314	0.526	0.261	0.611
+Polyn. order	1.000	1.000	1.000	1.000	1.000
+Bandwidth	0.024	0.029	0.024	0.025	0.030
+Outcome mean	0.676	0.033	0.643	0.641	0.718

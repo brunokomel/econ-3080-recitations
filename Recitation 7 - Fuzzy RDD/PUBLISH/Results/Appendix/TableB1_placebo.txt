@@ -1,0 +1,11 @@
+	(1)	(2)	(3)	(4)	(5)
+VARIABLES	nb_registered_R1	nb_candidates_R1	prop_registered_turnout_R1	distance_voteshare_cand12_R1	predicted_assignment
+					
+RD_Estimate	5,600.969	-0.137	0.003	0.003	0.015
+	(5,639.418)	(0.640)	(0.015)	(0.011)	(0.017)
+					
+Observations	1879	2428	2189	2018	1930
+Outcome mean	43981.52941176471	7.548	0.604	0.092	0.301
+Robust p-value	0.246	0.902	0.705	0.852	0.607
+Polyn. order	1.000	1.000	1.000	1.000	1.000
+Bandwidth	0.021	0.026	0.024	0.022	0.021
