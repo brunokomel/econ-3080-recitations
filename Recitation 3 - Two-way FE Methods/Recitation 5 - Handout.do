@@ -119,7 +119,7 @@ estimates store bjs
 *                                        *
 ******************************************
 
- use"https://raw.githubusercontent.com/LOST-STATS/LOST-STATS.github.io/master/Model_Estimation/Data/Event_Study_DiD/bacon_example.dta", clear
+ use"https://raw.githubusercontent.com/LOST-STATS/L OST-STATS.github.io/master/Model_Estimation/Data/Event_Study_DiD/bacon_example.dta", clear
 
  *****************************************
 *                                        *
