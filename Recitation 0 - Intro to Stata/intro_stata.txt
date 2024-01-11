@@ -1,0 +1,56 @@
+-----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recit
+> ation 0 - Intro to Stata/intro_stata.txt
+  log type:  text
+ opened on:  10 Jan 2024, 23:28:31
+
+. tab2 rep78 foreign 
+
+-> tabulation of rep78 by foreign  
+
+    Repair |
+    record |      Car origin
+      1978 |  Domestic    Foreign |     Total
+-----------+----------------------+----------
+         1 |         2          0 |         2 
+         2 |         8          0 |         8 
+         3 |        27          3 |        30 
+         4 |         9          9 |        18 
+         5 |         2          9 |        11 
+-----------+----------------------+----------
+     Total |        48         21 |        69 
+
+. log off //turn off log file temporarily; note log is still open and you'd have to close it be
+> fore opening a new log file 
+      name:  <unnamed>
+       log:  /Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recit
+> ation 0 - Intro to Stata/intro_stata.txt
+  log type:  text
+ paused on:  10 Jan 2024, 23:28:31
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recit
+> ation 0 - Intro to Stata/intro_stata.txt
+  log type:  text
+resumed on:  10 Jan 2024, 23:28:31
+
+. tab1 foreign, missing
+
+-> tabulation of foreign  
+
+ Car origin |      Freq.     Percent        Cum.
+------------+-----------------------------------
+   Domestic |         52       70.27       70.27
+    Foreign |         22       29.73      100.00
+------------+-----------------------------------
+      Total |         74      100.00
+
+. log close //close log file 
+      name:  <unnamed>
+       log:  /Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recit
+> ation 0 - Intro to Stata/intro_stata.txt
+  log type:  text
+ closed on:  10 Jan 2024, 23:28:31
+-----------------------------------------------------------------------------------------------
