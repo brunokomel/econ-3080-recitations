@@ -30,6 +30,8 @@ use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%201
 
 * Create means for catastrophic plan
 matrix means_sd = J(11, 2, .)
+matlist means_sd
+
 local row = 1
 
 foreach var of varlist female blackhisp age educper income1cpi hosp ghindx cholest systol mhi {
