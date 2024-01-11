@@ -29,9 +29,7 @@ use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%201
 */
 
 * Create means for catastrophic plan
-matrix means_sd = J(11, 2, .)
-matlist means_sd
-
+matrix means_sd = J(11, 2, .) // this creates an empty matrix with eleven rows and two columns
 local row = 1
 
 foreach var of varlist female blackhisp age educper income1cpi hosp ghindx cholest systol mhi {
@@ -40,9 +38,11 @@ foreach var of varlist female blackhisp age educper income1cpi hosp ghindx chole
 	matrix means_sd[`row', 2] = r(sd)
 	local row = `row'+1
 }
+                    
+// the for loop above fills in the matrix
 
 count if plantype_4 == 1
-matrix means_sd[11, 1] = r(N)
+matrix means_sd[11, 1] = r(N) // here we're filling in the final element of the matrix with the number of observations
 
 matrix rownames means_sd = female blackhisp age educper income1cpi hosp ghindx cholest systol mhi plantype
 matrix list means_sd
@@ -51,6 +51,15 @@ matrix list means_sd
 frmttable, statmat(means_sd) substat(1) varlabels sdec(4)
 		   ctitle("", "Cata. mean") replace;
 #d cr
+                    
+// With this last chunk of code, we're formatting the table. statmat(.) calls the matrix to use, 
+//                    substat(1) means that each element will have one additional statistic that will be placed below it
+//                    varlabels tells stata to use the labels matching the variable names
+//                    sdec(4) tells stata to use 4 decimal points
+//                    ctitle(. , . ) gives titles to each column
+//                   replace tells stata to replace whatever table it had stored most recently. 
+//                    Another option is "merge" (see below), which joins the current output with the most recently output table
+
 
 * Create regression output
 * Column 2: Deductible plan compared to catastrophic plan
