@@ -1,0 +1,11 @@
+	(1)	(2)	(3)	(4)	(5)	(6)	(7)	(8)
+VARIABLES	tot_expenditures_top2_reg	tot_contributions_top2_reg	personal_contributions_top2_reg	party_contributions_top2_reg	natural_advantages_top2_reg	donations_top2_reg	other_contributions_top2_reg	acccount_balance_top2_reg
+								
+RD_Estimate	0.013	-0.024	-0.078	0.080	0.003	0.003	-0.006	-0.010
+	(0.079)	(0.092)	(0.068)	(0.039)	(0.012)	(0.061)	(0.020)	(0.021)
+								
+Observations	890	786	800	1236	1437	954	1216	774
+Robust p-value	0.885	0.577	0.224	0.061	0.803	0.816	0.937	0.512
+Polyn. order	1.000	1.000	1.000	1.000	1.000	1.000	1.000	1.000
+Bandwidth	0.013	0.012	0.012	0.018	0.023	0.014	0.018	0.011
+Outcome mean	1.017	1.045	0.688	0.113	0.037	0.198	0.022	0.044

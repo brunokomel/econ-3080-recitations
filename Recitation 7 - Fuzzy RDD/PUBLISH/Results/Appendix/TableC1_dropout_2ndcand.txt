@@ -1,0 +1,11 @@
+	(1)	(2)	(3)	(4)
+VARIABLES	dropout_cand2	dropout_cand2	dropout_cand2	dropout_cand2
+				
+RD_Estimate	0.025	0.025	0.024	0.036
+	(0.045)	(0.032)	(0.058)	(0.053)
+				
+Observations	1966	3430	3092	3430
+Robust p-value	0.701	0.470	0.862	0.797
+Polyn. order	1.000	1.000	2.000	2.000
+Bandwidth	0.021	0.037	0.033	0.037
+Outcome mean	0.038	0.034	0.037	0.034
