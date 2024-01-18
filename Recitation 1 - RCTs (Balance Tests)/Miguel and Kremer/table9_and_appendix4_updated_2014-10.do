@@ -6,6 +6,12 @@ clear
 set more off
 version 12.1
 
+global da "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 1 - RCTs (Balance Tests)/Miguel and Kremer"
+
+global dt "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 1 - RCTs (Balance Tests)/Miguel and Kremer/results"
+
+
+
 * Incorporate Namelist data
 	use "$da/namelist" 
 
@@ -35,6 +41,7 @@ version 12.1
 	replace mk96_s = mk96*0.4357/0.8318 
 
 * Generate year measure
+	drop yr
 	gen     yr = . 
 	replace yr = 1 if (visit>981 & visit<993) 
 	replace yr = 2 if (visit>992 & visit<999) 
@@ -118,6 +125,47 @@ version 12.1
 	gen     t_any = 0 
 	replace t_any=1 if (t1==1 | t2==1) 
 	replace t_any=. if t1==. | t2==. 
+	save "$dt/table9a", replace 
+	
+label var yr "Year"
+label var sch98v1 "School ID of sampled child in Visit 1, 1998"
+label var prs  "Sampled child was present at time of visit"
+label var t1 "Treatment group 1"
+label var t2 "Treatment group 2"
+label var elg98 "Indicator for boys (of any age) or girls (under 13 years) in 1998"
+label var p1 "Indicator for Zone infection rates"
+label var mk96_s "School average of mock score, 1996"
+label var Y98sap1 "Visit took place in 1998, and smapled child was in Group 1"
+label var Y98sap2 "Visit took place in 1998, and smapled child was in Group 2"
+label var Y98sap3 "Visit took place in 1998, and smapled child was in Group 3"
+label var Y98sap4 "Visit took place in 1998, and smapled child was in Group 4"
+label var sap1 "Sampled child was in a SAP Group 1 School, Jan 1998"
+label var sap2 "Sampled child was in a SAP Group 2 School, Jan 1998"
+label var sap3 "Sampled child was in a SAP Group 3 School, Jan 1998"
+label var sap4 "Sampled child was in a SAP Group 4 School, Jan 1998"
+label var Istd1 "Standard (grade level 1) of sampled child in Visit 1 , 1998"
+label var Istd2 "Standard (grade level 2) of sampled child in Visit 1 , 1998"
+label var Istd3 "Standard (grade level 3) of sampled child in Visit 1 , 1998"
+label var Istd4 "Standard (grade level 4) of sampled child in Visit 1 , 1998"
+label var Istd5 "Standard (grade level 5) of sampled child in Visit 1 , 1998"
+label var Istd6 "Standard (grade level 6) of sampled child in Visit 1 , 1998"
+label var Istd7 "Standard (grade level 7) of sampled child in Visit 1 , 1998"
+label var Istd8 "Standard (grade level 8) of sampled child in Visit 1 , 1998"
+label var Istd9 "Standard (grade level 9) of sampled child in Visit 1 , 1998"
+label var Isem1 "Sampled child was observed within 6 monhts from the start of the project"
+label var Isem2 "Sampled child was observed between 6 to 12 monhts from the start of the project"
+label var Isem3 "Sampled child was observed after 12 monhts from the start of the project"
+label var pop1_3km_updated "Num. Grp1 'eligible' students w/in 3km, Jan 1998 (updated version)"
+label var pop2_3km_updated "Num. Grp2 'eligible' students w/in 3km, Jan 1998 (updated version)"
+label var pop1_36k_updated "Num. Grp1 'eligible' students w/in 3-6km, Jan 1998 (updated version)"
+label var pop2_36k_updated "Num. Grp2 'eligible' students w/in 3-6km, Jan 1998 (updated version)"
+label var popT_36k_updated "Total PSDP 'eligible' students w/in 3-6km, Jan 1998 (updated version) "
+label var popT_3km_updated "Total PSDP 'eligible' students w/in 3-6km, Jan 1998 (updated version) "
+label var obs "Sampled child was observed at time of visit (sum) "
+label var pop_3km_updated "Num. Grp1 'eligible' students w/in 3km, Jan 1998 (updated version)"
+label var pop_36k_updated "Num. Grp1 'eligible' students w/in 3-6km, Jan 1998 (updated version)"
+label var t_any "Any treatment group"
+
 	save "$dt/table9a", replace 
 
 **** TABLE 9, COLUMN 1	
