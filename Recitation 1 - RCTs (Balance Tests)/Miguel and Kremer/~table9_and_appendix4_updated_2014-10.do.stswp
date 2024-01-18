@@ -166,6 +166,8 @@ label var pop_3km_updated "Num. Grp1 'eligible' students w/in 3km, Jan 1998 (upd
 label var pop_36k_updated "Num. Grp1 'eligible' students w/in 3-6km, Jan 1998 (updated version)"
 label var t_any "Any treatment group"
 
+	save "$dt/table9a", replace 
+
 **** TABLE 9, COLUMN 1	
 	sum prs [aw=obs] if  (t1~=. & elg98~=. & sch98v1~=. & mk96_s~=. & p1~=. & Istd2~=. & pop1_3km_updated~=.) 
 	regress prs t_any elg98 p1 mk96_s Y98sap* sap* Istd* Isem* [aw=obs] if (t1~=. & elg98~=. & sch98v1~=. & mk96_s~=. & p1~=. & Istd2~=. & pop1_3km_updated~=.), robust cluster(sch98v1) 
