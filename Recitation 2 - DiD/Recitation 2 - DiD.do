@@ -147,7 +147,6 @@ twoway (connected fte after if nj ==1, color(blue)) (connected fte after if nj =
 restore
 
 /// Difference-in-differences Exercise /// 
-cd "$data"
 use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/panel101.dta", clear 
 //reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
 
