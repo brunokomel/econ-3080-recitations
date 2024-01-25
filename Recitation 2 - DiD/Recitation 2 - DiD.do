@@ -1,5 +1,13 @@
-global data  "/Users/brunokomel/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 4/Recitation 4 - Handout/Data"
-global working  "/Users/brunokomel/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 4/Recitation 4 - Handout/Working"
+********************************
+*                              *
+*                              *
+*         Recitation 2         *
+*                              *
+*                              *
+********************************
+
+global data  "/Users/brunokomel/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 4 - DiD/Recitation 4 - Handout/Data"
+global working  "/Users/brunokomel/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 4 - DiD/Recitation 4 - Handout/Working"
 
 set scheme gg_tableau
 
@@ -10,13 +18,18 @@ capture version 13
 
 cd "${data}"
 
-/* Import data */
-infile SHEET CHAIN CO_OWNED STATE SOUTHJ CENTRALJ NORTHJ PA1 PA2      ///
-       SHORE NCALLS EMPFT EMPPT NMGRS WAGE_ST INCTIME FIRSTINC BONUS  ///
-       PCTAFF MEALS OPEN HRSOPEN PSODA PFRY PENTREE NREGS NREGS11     ///
-       TYPE2 STATUS2 DATE2 NCALLS2 EMPFT2 EMPPT2 NMGRS2 WAGE_ST2      ///
-       INCTIME2 FIRSTIN2 SPECIAL2 MEALS2 OPEN2R HRSOPEN2 PSODA2 PFRY2 ///
-       PENTREE2 NREGS2 NREGS112 using "public.dat", clear
+********************************
+*                              *
+*                              *
+*       Card and Krueger       *
+*                              *
+*                              *
+********************************
+
+// Import the data
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/public.dta", clear
+
+keep STATE EMPFT EMPPT EMPFT2 EMPPT2 NMGRS NMGRS2 SHEET
 
 /* Label the state variables and values */
 label var STATE "State"
@@ -53,15 +66,45 @@ gen fte = FTE // I don't like capital letters and I want this new "fte" variable
 
 replace fte = FTE2 if after ==1 
 
-cd "$working"
+//cd "$working"
 
-save working_data, replace
+//save working_data, replace
 
 
 ** Now we can do Diff-in-Diff analyses:
 
 reg fte nj after njafter, robust // The traditional specification
 
+// Or we can manually calculate the means
+
+bys nj: sum fte if after ==0
+
+qui sum fte if after == 0 & nj == 0
+global pa_mean_before = `r(mean)'
+
+qui sum fte if after == 0 & nj == 1
+global nj_mean_before = `r(mean)'
+    
+bys nj: sum fte if after == 1
+    
+qui sum fte if after == 1 & nj == 0
+global pa_mean_after = `r(mean)'
+
+qui sum fte if after == 1 & nj == 1
+global nj_mean_after = `r(mean)' 
+
+di $nj_mean_before - $pa_mean_before
+
+global d1 = $nj_mean_before - $pa_mean_before
+
+di $nj_mean_after - $pa_mean_after
+
+global d2 = $nj_mean_after - $pa_mean_after
+
+di $d2 - $d1
+///
+
+// Back to regressions
 reg fte njafter nj after, cluster(SHEET) // Clustering Standard Errors by store
 
 reg dif nj after nj#after, robust // An alternative way to run this regression
@@ -69,16 +112,15 @@ reg dif nj after nj#after, robust // An alternative way to run this regression
 reg dif nj after njafter, robust // A little cleaner way to do the same thing as above
 
 //ssc install diff
-diff fte, t(nj) p(after)
+diff fte, t(nj) p(after) // Look at this nice command. t(.) indicates the treatment variable, and p(.) indicates the period variable (should = 1 for the post period)
 
 
 preserve 
 
-use working_data
 qui reg fte nj after njafter, robust
 
 collapse (mean) fte, by(nj after)
-save working_data_did, replace
+//save working_data_did, replace
 
 twoway (connected fte after if nj ==1, color(blue)) (connected fte after if nj ==0, color(red)), xline(0.5)  ///
   legend(label(1 NJ - Treatment) label(2 PA - Control)) 
@@ -97,7 +139,7 @@ reg fte nj after njafter, robust
 
 collapse (mean) fte fte_did, by(nj after)
 
-save working_data_did2, replace
+//save working_data_did2, replace
 
 twoway (connected fte after if nj ==1, color(blue)) (connected fte after if nj ==0, color(red)) (connected fte_did after if nj ==0, color(red) lpattern(dash)) , xline(0.5)   legend(label(1 NJ - Treatment) label(2 PA - Control) label(3 Counterfactual) ) 
 
@@ -106,34 +148,42 @@ restore
 
 /// Difference-in-differences Exercise /// 
 cd "$data"
-use panel101.dta, clear //reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/Recitation%202%20-%20Handout/Data/panel101.dta", clear 
+//reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
 
 tab year //from 1990 to 1999 
 tab country //7 countries
 
+// 1. Create a "post" variable which is equal to 1 if the observation takes place on or after 1994 (careful with missing values)
+
 gen time = (year>=1994) & !missing(year) //generating before and after period, equivalent to a time fixed effect 
 
+// 2. Create a treated variable which is equal to 1 for countries 4, 5, 6, and 7.
 gen treated = (country > 4) & !missing(country) //generating treatment units and non-treatment units, equivalent to a group fixed effect 
 
+
+// 3. Create a variable for the interaction term
 gen did = time*treated //D_it = 1 if country ? 4 and year >= 1994
 
-reg y time treated did
-
+// 4. Estimate the DiD coefficient using the 'diff' command
 *ssc install diff //install "diff" package 
 
 diff y, t(treated) p(time) 
 
+// 5. Estimate the DiD coefficient using the regression command
+reg y time treated did
+
+//  6. Repeat part 5, but this time use the '##' option.
+reg y time##treated
 
 reg y time treated did
 gen y_did = y + _b[treated]
 
+
+// 7. Plot the DiD coefficeint as we did earlier, using the twoway command. (Be sure to usee preserve & restore)
 preserve 
 
 collapse (mean) y y_did, by(treated time)
-
-cd "$working"
-
-save ex_working_did, replace
 
 twoway (connected y time if treated ==1, color(blue)) (connected y time if treated ==0, color(red)) (connected y_did time if treated ==0, color(red) lpattern(dash))  , xline(0.5) legend(label(1 Treated) label(2  Control) label(3 Counterfactual))
 
