@@ -148,7 +148,7 @@ restore
 
 /// Difference-in-differences Exercise /// 
 cd "$data"
-use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/Recitation%202%20-%20Handout/Data/panel101.dta", clear 
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/panel101.dta", clear 
 //reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
 
 tab year //from 1990 to 1999 

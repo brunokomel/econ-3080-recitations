@@ -113,21 +113,27 @@ restore
 
 
 /// Difference-in-differences Exercise /// 
-cd "$data"
-use panel101.dta, clear //reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
 
-// Any "*" below indicates a part of the exercise
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%202%20-%20DiD/panel101.dta", clear 
+//reference: slides by Torres-Reyna @ https://www.princeton.edu/~otorres/DID101.pdf
 
-* 1. Take a look at the variables "year" and "country" to see what they look like
+tab year //from 1990 to 1999 
+tab country //7 countries
 
-* 2. Create a variable to indicate post treatment, such that it equals 1 if year is after 1994 and 'year' is not missing.
+// 1. Create a "post" variable which is equal to 1 if the observation takes place on or after 1994 (careful with missing values)
 
-* 3. Create a variable to indicate treated units. Assume that countries E, F, G were treated. (hint: the country variable has numbers associated with it, and careful with missing values)
+// 2. Create a treated variable which is equal to 1 for countries 4, 5, 6, and 7.
 
-* 4. Generate the interaction term (optional)
 
-* 5. Run the regression! 
+// 3. Create a variable for the interaction term
 
-* 6. Use the command "diff" to get the DiD estimate
+// 4. Estimate the DiD coefficient using the 'diff' command
 
-* 7. Create a Diff-in-Diff Plot like the one we did earlier
+// 5. Estimate the DiD coefficient using the regression command
+
+//  6. Repeat part 5, but this time use the '##' option.
+
+// 7. Plot the DiD coefficeint as we did earlier, using the twoway command. (Be sure to usee preserve & restore)
+
+
+
