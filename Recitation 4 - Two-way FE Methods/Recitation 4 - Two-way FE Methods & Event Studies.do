@@ -167,15 +167,37 @@ global xvar l_police unemployrt poverty l_income l_prisoner l_lagprisoner $demo 
 
 // 0. Figure out what the treatment variable is
 
+// post
+
 // 1. Estimate the ATE of the treatment variable on log homicides.
 * Make sure to use year and state fixed effects. (Hint: you should also use population weights, popwt)
 * Also, you should control for region, linear trends, and other covariates that were stored as globals
 
 
+xtset
+
+label variable post "Year of treatment"
+xi: xtreg l_homicide post i.year $region $xvar $lintrend  [aweight=popwt], fe vce(cluster sid)
+
+
+// My preferred command
+reghdfe l_homicide  post $region $xvar $lintrend  [aw = popwt], vce(cluster sid) absorb(year sid)
 
 // 2. Now create an event-study plot for this setting.
 
+gen ref = 0
 
+* Event study regression with the year of treatment (lag0) as the omitted category.
+reghdfe l_homicide lead9 lead8 lead7 lead6 lead5 lead4 lead3 lead2 lead1 ref lag1-lag5  $region [aweight=popwt], absorb(year sid) vce(cluster sid)
+
+set scheme tab1
+
+coefplot, keep(lead9 lead8 lead7 lead6 lead5 lead4 lead3 lead2 lead1 ref lag1 lag2 lag3 lag4 lag5 ) ///
+	xlabel(, angle(vertical))  yline(-.5(0.25)0.5) xline(10) vertical omitted recast(connected) xlabel(, angle(0)) ///
+	ciopts(recast(rcap) lwidth(*1) lcolor(gs2) ) format(%9.0f)   mcolor(gs2) lcolor(gs2) ///
+	mlabposition(12) mlabgap(*2) title(Event-Study Plot)  lstyle(grid) ///
+	rename(lead9 = "-9" lead8 = "-8" lead7 = "-7" lead6 = "-6"   lead5 = "-5" lead4 = "-4" lead3 = "-3" lead2 = "-2"  lead1 = "-1" ref = "0" lag1 = "1" lag2 = "2" lag3 = "3" lag4 = "4" lag5 = "5" )  ///
+	addplot(scatteri -.5 10 -.5 11 .5 11 .5 10, recast(area) lwidth(none) color(grey%10) ) 
 
 
 
