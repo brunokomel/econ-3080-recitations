@@ -323,10 +323,10 @@ drop if treat==0 // Notice that we're dropping the experimental control group be
 
 append using https://github.com/scunning1975/mixtape/raw/master/cps_mixtape.dta
 
-// And let's generate some variables so we can match the observations based pn observable characteristics
+// And let's generate some variables so we can match the observations based on observable characteristics
 gen agesq=age*age
 gen agecube=age*age*age
-gen edusq=educ*edu
+gen edusq=educ*educ
 gen u74 = 0 if re74!=.
 replace u74 = 1 if re74==0
 gen u75 = 0 if re75!=.
