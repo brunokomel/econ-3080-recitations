@@ -24,8 +24,8 @@ set scheme gg_tableau
 
 * Estimation 1: Texas model of black male prisoners (per capita) 
 use https://github.com/scunning1975/mixtape/raw/master/texas.dta, clear
-ssc install synth, replace
-ssc install mat2txt, replace 
+//ssc install synth, replace
+//ssc install mat2txt, replace 
 
 global wd "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 5 - Synthetic Control and PSM"
 
@@ -40,8 +40,8 @@ cd "$wd"
 cd "$wd/data"
 
 #delimit; 
-synth   bmprison  
-            bmprison(1990) bmprison(1991) bmprison(1992) bmprison(1988)
+synth   bmprate  
+            bmprate(1990) bmprate(1991) bmprate(1992) bmprate(1988)
             alcohol(1990) aidscapita(1990) aidscapita(1991) 
             income ur poverty black(1990) black(1991) black(1992) 
             perc1519(1990)
@@ -85,6 +85,15 @@ graph save Graph synth_tx.gph, replace
 		
 
 
+* Plot the gap in predicted error
+use "$wd/data/synth_bmprate.dta", clear
+keep _Y_treated _Y_synthetic _time
+drop if _time==.
+rename _time year
+rename _Y_treated  treat
+rename _Y_synthetic counterfact
+gen gap48=treat-counterfact
+sort year
 * Plot the gap in predicted error
 use "$wd/data/synth_bmprate.dta", clear
 keep _Y_treated _Y_synthetic _time
