@@ -1,19 +1,19 @@
 **************************************
 *                                    *
 *                                    *
-*            Recitation 8            *
+*            Recitation 7            *
 *                                    *
 *                                    *
 **************************************
 
-// Date: 2/28/23
+// Date: 2/22/24
 // By: Bruno Kömel
 
-global recitation "~/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 8 - Fuzzy RDD"
+global recitation "~/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 7 - Fuzzy RDD"
 cd "${recitation}"
 
 // Thanks to https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/#fuzzy-parametric-estimation for this
-import delimited "tutoring_program_fuzzy.csv", clear 
+import delimited "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Fuzzy%20RDD/tutoring_program_fuzzy.csv", clear
 
 //Here's the setting:
 * Students take an entrance exam at the beginning of the school year
@@ -32,20 +32,33 @@ replace below_cutoff = 1 if entrance_exam <= 70
 
 tab tutoring, gen(tutoring)
 
-bysort below_cutoff tutoring2: sum tutoring2
+bysort below_cutoff tutoring2: sum tutoring2 // tutoring2 is the variable created as an indicator of receiving tutoring
 
 
 // Let's see if we can find some discontinuity in the plots?
 twoway (scatter exit_exam entrance_exam if tutoring2 == 1 ) ///
 	(scatter exit_exam entrance_exam if tutoring2 == 0) ///
-	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam <= 70 , ciplot(rline) color(red)) ///
-	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam > 70 , ciplot(rline) color(red)) ///
-	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam <= 70 ,  ciplot(rarea) color(green)) ///
-	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam > 70 , ciplot(rarea) color(green)), /// 
+	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam <= 70 , ciplot(rarea) color(blue%30)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam > 70 , ciplot(rarea) color(blue%30)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam <= 70 ,  ciplot(rarea) color(red%30)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam > 70 , ciplot(rarea) color(red%30)), /// 
+	legend(lab(1 "With Tutoring") lab(2 "No Tutoring") lab(4 "Tutoring Below Fit.") ///
+	lab(6 "Tutoring Above Fit.") lab(8 "No Tut. Below Fit.") lab(10 "No Tut. Above Fit."))
+
+twoway (scatter exit_exam entrance_exam if tutoring2 == 1 ) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam <= 70 , ciplot(rarea) color(blue%30)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 1& entrance_exam > 70 , ciplot(rarea) color(blue%30)), ///
 	legend(lab(1 "With Tutoring") lab(2 "No Tutoring") lab(4 "Tutoring Below Fit.") ///
 	lab(6 "Tutoring Above Fit.") lab(8 "No Tut. Below Fit.") lab(10 "No Tut. Above Fit."))
 
 	
+	
+twoway (scatter exit_exam entrance_exam if tutoring2 == 0, color(red)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam <= 70 ,  ciplot(rarea) color(green%30)) ///
+	(lfitci  exit_exam entrance_exam if tutoring2 == 0& entrance_exam > 70 , ciplot(rarea) color(green%30)), /// 
+	legend(lab(1 "With Tutoring") lab(2 "No Tutoring") lab(4 "Tutoring Below Fit.") ///
+	lab(6 "Tutoring Above Fit.") lab(8 "No Tut. Below Fit.") lab(10 "No Tut. Above Fit."))
+
 // Next, just so we can get an idea of how many compliers, and non-compliers we have, let's plot this differently. 
 // Here I want to see the probability of receiving tutoring for the different socres that people received, using bins of 5 points each.
 
@@ -65,6 +78,9 @@ forvalues i = 25(5)95{
 gen cat1=(inrange(entrance_exam,51,55))
 
 // And add a label so it looks slightly better
+label define tutoring1_lab  1 "No Tutoring" 0 "Tutoring", add
+label values tutoring1 tutoring1_lab
+
 forvalues i = 25(5)95{
 	label define entr_score_cat_lab `=`i'/5 - 5' "`=`i'+1' - `=`i'+5'" , add	
 }
@@ -106,7 +122,7 @@ eststo OLS: reg exit_exam entrance_centered tutoring2 if (entrance_centered >= -
 /// ssc install ivreg2
 /// ssc install ranktest
 
-eststo IV: ivreg2 exit_exam entrance_centered ( tutoring2 = below_cutoff )  if (entrance_centered >= -10 & entrance_centered <=10), robust 
+eststo IV: ivreg2 exit_exam entrance_centered ( tutoring2 = below_cutoff )  if (entrance_centered >= -10 & entrance_centered <=10), robust savefirst
 	estadd scalar BW = 10
 // Now the coefficeint dropped to 9.74. This is the effect on compliers in the bandwidth (which we chose)
 
@@ -119,7 +135,16 @@ global latex "/Users/brunokomel/Library/CloudStorage/Dropbox/Apps/Overleaf/Recit
 cd "${latex}"
 
 // Using this method we get pretty close results!
-esttab OLS IV RDrob using "table1.tex",  sfmt(4) b(3) se(2) keep(tutoring2 RD_Estimate) varlabel(RD_Estimate "Received Tutoring (Non-Parametric)") label mtitles("OLS" "2SLS" "RD Robust") scalars("N Observations" "BW Bandwidth Choice") fragment replace
+esttab OLS IV using "table1.tex",  sfmt(4) b(3) se(2) keep(tutoring2 ) noobs label mtitles("OLS" "2SLS" "RD Robust") /// 
+posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel B: IV Estimates}}\\\\ [-1ex] ") /// /// 
+fragment replace
+
+esttab RDrob using "table1.tex", sfmt(4) b(3) se(2) keep(RD_Estimate) varlabel(RD_Estimate "Received Tutoring (Non-Parametric)") mtitles("Fuzzy RDD") ///
+ scalars("N Observations" "BW Bandwidth Choice") booktabs  compress ///
+prehead("\\ \hline") ///
+posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel B: IV Estimates}}\\\\ [-1ex] ") ///
+fragment ///
+append 
 
 /// Here, esttab will tell stata to compile your table
 /// using creates, or overwrites, a .tex file where your table will go (it'll go to the working directory)
@@ -147,7 +172,7 @@ esttab OLS IV RDrob using "table1.tex",  sfmt(4) b(3) se(2) keep(tutoring2 RD_Es
 //https://www.econometricsociety.org/publications/econometrica/2018/09/01/expressive-voting-and-its-cost-evidence-runoffs-two-or-three
 cd "${recitation}"
 
-use analysis.dta, clear
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Fuzzy%20RDD/analysis.dta", clear
 
 // Let's simplify by only keeping the stuff we're going to use
 keep  prop_registered_turnout_R2 running treatment assignment prop_registered_blanknull_R2 prop_registered_candvotes_R2 year prop_registered_votes_cand3_R1
@@ -171,13 +196,18 @@ rdplot turnout running,  fuzzy(treatment) nbins(30 30) p(2). graph_options(title
 // We can also add confidence intervals:
 rdplot turnout running,  fuzzy(treatment) nbins(30 30) p(2). graph_options(title("") legend(off) ytitle(Candidate votes 2nd round) xtitle(Running variable) graphregion(color(white)) ylabel(.2(.2) 1) xlabel(-.15 (.05) .15))) ci(95) shade
  
-rdplot turnout running,  nbins(30 30) p(2). graph_options(title("") legend(off) ytitle(Candidate votes 2nd round) xtitle(Running variable) graphregion(color(white)) ylabel(.2(.2) 1) xlabel(-.15 (.05) .15)))
-// Here I just want to show that including the "fuzzy" option doesn't change anything here
+ // or
+rdplot turnout running, nbins(30 30) p(2). graph_options(title("") legend(off) ytitle(Candidate votes 2nd round) xtitle(Running variable) graphregion(color(white)) ylabel(.2(.2) 1) xlabel(-.15 (.05) .15))) ci(95) shade
+ 
+// Here I just want to show that including the "fuzzy" option doesn't change anything here (in the plot)
 
 // To see which estimates we need to keep to replicate the table, let's use
+rdrobust turnout running, fuzzy(treatment) 
 ereturn list
 
 // Replicate and generate table 3, then add a panel below using the 2sls estimates
+
+// Replicating table 3
 eststo rdrob_turn: rdrobust turnout running, fuzzy(treatment) 
 	estadd scalar obs=e(N_h_l)+e(N_h_r)
 	estadd scalar pval = e(pv_rb)
@@ -231,6 +261,8 @@ replace
 // noobs tells stata not to show the normal Observation count
 // compress : I don't know exactly what it does, but the tables look bad without it
 // posthead is some LaTex stuff that I don't really understand, but I copy and edit as I need it
+
+/// Now adding a panel with 2sls estimates
 
 // Note here that you will have to make a choice of bandwidth. I chose 0.02, because there were still enough observations on both sides to get significant estimates (and it's close to the optimal bandwidth above)
 
