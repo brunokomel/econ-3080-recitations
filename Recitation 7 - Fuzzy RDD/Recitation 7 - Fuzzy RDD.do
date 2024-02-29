@@ -170,9 +170,10 @@ append
 // From Vincent Ponz and Clemente Tricaud's papper "Expressive Voting and its Cost: Evidence from Runoffs With Two or Three Candidates"
 // Econometrica 2018
 //https://www.econometricsociety.org/publications/econometrica/2018/09/01/expressive-voting-and-its-cost-evidence-runoffs-two-or-three
+global recitation "~/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 7 - Fuzzy RDD"
 cd "${recitation}"
 
-use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Fuzzy%20RDD/analysis.dta", clear
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%207%20-%20Fuzzy%20RDD/analysis.dta", clear
 
 // Let's simplify by only keeping the stuff we're going to use
 keep  prop_registered_turnout_R2 running treatment assignment prop_registered_blanknull_R2 prop_registered_candvotes_R2 year prop_registered_votes_cand3_R1
@@ -186,7 +187,7 @@ rename prop_registered_candvotes_R2 candvotes
 
 // Let's plot some stuff so we get an idea of what's happening
 // First, the "first stage"
-rdplot treatment running, p(1) graph_options(title("") ytitle(Treatment status) xtitle(Running variable) graphregion(color(white)) legend(off) ylabel(0 (.2) 1) xlabel(-.1 (.05) .1))) nbins(20 20)
+rdplot treatment running, p(1) c(0) graph_options(title("") ytitle(Treatment status) xtitle(Running variable) graphregion(color(white)) legend(off) ylabel(0 (.2) 1) xlabel(-.1 (.05) .1))) nbins(20 20)
 // Note how we don't have perfect compliance. Not all candidates who get more than 12.5% end up running in the second round
 
 // Second, let's look at one of the outcomes 
@@ -204,6 +205,9 @@ rdplot turnout running, nbins(30 30) p(2). graph_options(title("") legend(off) y
 // To see which estimates we need to keep to replicate the table, let's use
 rdrobust turnout running, fuzzy(treatment) 
 ereturn list
+
+eststo rdrob_turn: rdrobust turnout running, fuzzy(treatment) 
+
 
 // Replicate and generate table 3, then add a panel below using the 2sls estimates
 
