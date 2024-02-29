@@ -70,7 +70,7 @@ ivreg_ss d_sh_empl_mfg, endogenous_var(d_tradeusch_pw) shiftshare_iv(d_tradeotch
 *                                    *
 **************************************
 
-use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%209%20-%20Shift-Share/workfile_china_id.dta", clear
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Shift-Share/workfile_china_id.dta", clear
 
 keep lnchg_popworkage czone statefip yr t2
 
@@ -80,7 +80,7 @@ unique id
 
 
 // Change this in your computers:
-cd "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 9 - Shift-Share/"
+cd "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 8 - Shift-Share/"
 
 save "workfile_china_id.dta", replace
 
@@ -89,7 +89,7 @@ use $ADH_derived, clear
 egen id = concat(czone state year t2)
 unique id
 
-merge 1:1 id using "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 9 - Shift-Share/workfile_china_id"
+merge 1:1 id using "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 8 - Shift-Share/workfile_china_id.dta"
 
 drop _merge id
 
