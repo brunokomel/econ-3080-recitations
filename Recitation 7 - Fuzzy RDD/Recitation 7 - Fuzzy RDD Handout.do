@@ -13,7 +13,7 @@ global recitation "~/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/
 cd "${recitation}"
 
 // Thanks to https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/#fuzzy-parametric-estimation for this
-import delimited "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Fuzzy%20RDD/tutoring_program_fuzzy.csv", clear
+import delimited "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%207%20-%20Fuzzy%20RDD/tutoring_program_fuzzy.csv", clear
 
 //Here's the setting:
 * Students take an entrance exam at the beginning of the school year
@@ -135,14 +135,14 @@ global latex "/Users/brunokomel/Library/CloudStorage/Dropbox/Apps/Overleaf/Recit
 cd "${latex}"
 
 // Using this method we get pretty close results!
-esttab OLS IV using "table1.tex",  sfmt(4) b(3) se(2) keep(tutoring2 ) noobs label mtitles("OLS" "2SLS" "RD Robust") /// 
-posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel B: IV Estimates}}\\\\ [-1ex] ") /// /// 
+esttab OLS IV using "table1.tex",  sfmt(4) b(3) se(2) keep(tutoring2 ) noobs label mtitles("OLS" "2SLS") /// 
+posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel A: OLS and IV Estimates}}\\\\ [-1ex] ") /// /// 
 fragment replace
 
 esttab RDrob using "table1.tex", sfmt(4) b(3) se(2) keep(RD_Estimate) varlabel(RD_Estimate "Received Tutoring (Non-Parametric)") mtitles("Fuzzy RDD") ///
  scalars("N Observations" "BW Bandwidth Choice") booktabs  compress ///
 prehead("\\ \hline") ///
-posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel B: IV Estimates}}\\\\ [-1ex] ") ///
+posthead("\hline \\ \multicolumn{2}{c}{\textbf{Panel B: RD Robust Estimates}}\\\\ [-1ex] ") ///
 fragment ///
 append 
 

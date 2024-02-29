@@ -13,7 +13,7 @@ global recitation "~/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/
 cd "${recitation}"
 
 // Thanks to https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/#fuzzy-parametric-estimation for this
-import delimited "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%208%20-%20Fuzzy%20RDD/tutoring_program_fuzzy.csv", clear
+import delimited "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%207%20-%20Fuzzy%20RDD/tutoring_program_fuzzy.csv", clear
 
 //Here's the setting:
 * Students take an entrance exam at the beginning of the school year
