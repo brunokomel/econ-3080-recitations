@@ -42,7 +42,8 @@ quietly {
 	matlist B
 	
 	
-	corr2data X W1 C1, n(30000) cov(B) means(1,1,1) // This creates a dataset with a specified correlation structure
+	corr2data X W1 C1, n(30000) cov(B) means(1,1,1) // This creates a dataset with a specified correlation structure 
+	// bottom line is that X is correlated with W1, C1
 	set seed 25813495
 	gen y_error=rnormal()
 
@@ -56,11 +57,11 @@ reg Y X
 	
 reg Y X C1 // you can see that if we include C1 in the regression, the coefficient on X doesn't change much
 psacalc beta X, delta(1) //Note here that psacalc fixes the problem
-psacalc delta X  // Note that delta = 1, but we know that the coefficient is biased. We could notice that there is evide nce of biased by looking at the low R^2.
+psacalc delta X  // Note that delta = 1, but we know that the coefficient is biased. We could notice that there is evidence of biased by looking at the low R^2.
 	
 reg Y X W1 // But when we include the variable with high variance, the coefficient goes away
 psacalc beta X // Again, psacalc gives the right answer (but it was easier this time)
-psacalc delta X // Here, however, we have delta = 1, but very high R^2, so selection is probably not an issue.
+psacalc delta X // Here, however, we have delta = 1, but very high R^2, so selection is probably not an issue. (this is because in the controlled equation, the coefficient on X is very small)
 	
 reg Y X C1 W1
 psacalc beta X
@@ -83,7 +84,7 @@ quietly {
 	
 	
 	corr2data X W1 C1, n(30000) cov(B) means(1,1,1) 
-set seed 25813495
+	set seed 25813495
 	gen y_error=rnormal()
 
 	local beta=10 // change the coefficient on X to be 10
@@ -194,7 +195,7 @@ psacalc beta south
 *                              *
 ********************************
 
-use "/Users/brunokomel/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 11 - Psacalc/Recitation 11 Handout/Nunn_Wantchekon_AER_2011.dta", clear
+use "https://github.com/brunokomel/econ-3080-recitations/raw/main/Recitation%209%20-%20Psacalc/Nunn_Wantchekon_AER_2011.dta", clear
 
 
 egen group=group(isocode)
@@ -205,8 +206,13 @@ global baseline_controls "age age2 male urban_dum i.education i.occupation i.rel
 
 global colonial_controls "malaria_ecology total_missions_area explorer_contact railway_contact cities_1400_dum i.v30 v33"
 
-	
+keep trust_relatives trust_neighbors age age2 male urban_dum education occupation religion living_conditions district_ethnic_frac frac_ethnicity_in_district isocode malaria_ecology total_missions_area explorer_contact railway_contact cities_1400_dum v30 v33 ln_init_pop_density murdock_name ln_export_area
+ 
+***************** Table 3
+*********** Column 1
 // Unrestricted 
+
+// It's possible to run the psacalc command "manually" by storing each of the relevant statistics and calling the command psacalci
 
 xi: reg trust_relatives ln_export_area $baseline_controls $colonial_controls ln_init_pop_density, cluster(murdock_name)
 predict hat if e(sample)
@@ -239,48 +245,13 @@ sum trust_relatives
 
 psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux beta, rmax(0.975) delta(1)
 
+psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux delta, rmax(0.975) beta(0)
+
 psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux beta, rmax(.25) delta(1)
 
+// I honestly do not know why one would do this.  Just use the psacalc command
 
 xi: reg trust_relatives ln_export_area $baseline_controls $colonial_controls ln_init_pop_density, cluster(murdock_name)
 
 psacalc beta ln_export_area 
 psacalc delta ln_export_area // delta is very small so it would not take a lot of selection on unobservables to make the treatment effect = 0
-
-*********** Row 2
-drop hat
-
-xi: reg trust_neighbors ln_export_area $baseline_controls $colonial_controls ln_init_pop_density, cluster(murdock_name)
-predict hat if e(sample)
-	drop if hat ==.
-	global beta_tilde = _b[ln_export_area]
-	global r_tilde = e(r2)
-	global se_tilde = _se[ln_export_area]
-	
-
-// Unrestricted 
-xi: reg trust_neighbors ln_export_area i.isocode, cluster(murdock_name)
-	global beta_dot = _b[ln_export_area]
-	global r_dot = e(r2)
-
-
-
-sum trust_relatives
-	global yvar = r(Var)
-	
-	reg ln_export_area i.isocode
-	predict xhat, resid
-	sum xhat
-	global xvar =r(Var)
-	drop xhat
-	
-	reg ln_export_area i.isocode $baseline_controls $colonial_controls ln_init_pop_density
-	predict xhat, resid
-	sum xhat
-	global taux =r(Var)
-	drop xhat
-
-
-psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux beta, rmax(0.4) delta(1)
-
-psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux beta, rmax(.363) delta(1)
