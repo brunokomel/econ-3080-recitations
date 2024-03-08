@@ -1,7 +1,7 @@
 **************************************
 *                                    *
 *                                    *
-*           Recitation 8            *
+*           Recitation 8             *
 *                                    *
 *                                    *
 **************************************
@@ -28,14 +28,14 @@ global controls2 t2 l_sh* reg_*
 // ssc install reg_ss
 
 // Just replicating column 1 and 6 of table 3 on the ADH 2013 paper
-ivreg2 d_sh_empl_mfg (d_tradeusch_pw=d_tradeotch_pw_lag) t2 [aw=weight], cluster(state) first
+ivreg2 d_sh_empl_mfg (d_tradeusch_pw=d_tradeotch_pw_lag) t2 [aw=weight], cluster(state) first savefirst
 * recall, you should read this as: ivreg2 'outcome' ('endogenous variable' = 'instrument') controls [weight], cluster  
 
-ivreg2 d_sh_empl_mfg (d_tradeusch_pw=d_tradeotch_pw_lag) $controls [aw=weight], cluster(state) first
+ivreg2 d_sh_empl_mfg (d_tradeusch_pw=d_tradeotch_pw_lag) $controls [aw=weight], cluster(state) first ffirst savefirst
 
 // Example 1 
 
-ivreg_ss d_sh_empl_mfg, endogenous_var(d_tradeusch_pw) shiftshare_iv(d_tradeotch_pw_lag) control_varlist($controls) share_varlist(emp_share1-emp_share770) weight_var(weight) alpha(0.05) akmtype(1) firststage(1)
+ivreg_ss d_sh_empl_mfg, endogenous_var(d_tradeusch_pw) shiftshare_iv(d_tradeotch_pw_lag) control_varlist($controls) share_varlist(emp_share1-emp_share770) weight_var(weight) alpha(0.05) akmtype(1) firststage(1) 
 
 // Example 2 (using the AKM0 model)
 use $ADH_derived, clear

@@ -254,4 +254,29 @@ psacalci $beta_dot $r_dot  $beta_tilde $r_tilde $yvar $xvar $taux beta, rmax(.25
 xi: reg trust_relatives ln_export_area $baseline_controls $colonial_controls ln_init_pop_density, cluster(murdock_name)
 
 psacalc beta ln_export_area 
-psacalc delta ln_export_area // delta is very small so it would not take a lot of selection on unobservables to make the treatment effect = 0
+psacalc delta ln_export_area //, rmax(1) // delta is very small so it would not take a lot of selection on unobservables to make the treatment effect = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
