@@ -136,6 +136,8 @@ replace post0 = 0
 // Run the stacked event study
 stackedev outcome  pre7 pre6 pre5 pre4 pre3 pre1 pre2 post0 post1 post2 post3 post4 post5 , cohort(treat_year) time(year)  never_treat(no_treat) unit_fe(state) clust_unit(state) covariates(cov)
 
+// reghdfe outcome  pre7 pre6 pre5 pre4 pre3 pre1 pre2 post0 post1 post2 post3 post4 post5 , abs(state year)  cluster(state)
+
 // Notice that this command is pretty much a regression command. All you have to specify is are the cohort, time, never treated, unit fixed effects, cluster unit, and desired covariates (separately from the leads and lags)
 
 event_plot, default_look graph_opt(xtitle("Periods since the event") ytitle("Average effect") xlabel(-8(1)5) ///
@@ -267,6 +269,9 @@ replace _nfd2=0 if _nfd==.
 // remember to control for per-capita income, homicide mortality, AFDC cases, state and year fixed effects (don't forget the interaction term)
 
 reghdfe asmrs interaction pcinc asmrh cases,abs(stfips year)
+
+reghdfe asmrs post pcinc asmrh cases,abs(stfips year)
+
 
 // run bacondecomp on the same regression you just ran above 
 bacondecomp asmrs post pcinc asmrh cases, stub(Bacon_) robust ddetail
