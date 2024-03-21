@@ -71,17 +71,21 @@ recode gvar (. = 0)
 ******************************************
 
 // ssc install bacondecomp, replace
-reghdfe Y D, abs(cohort t) //This is running a two-way fixed effect regression with cohort and time fixed effects (abs stands for "absorve" that's because the fixed effects model absorves the movement within each category)
+reghdfe Y D, abs(cohort t) //This is running a two-way fixed effect regression with cohort and time fixed effects (abs stands for "absorb" that's because the fixed effects model absorves the movement within each category)
 
 bacondecomp Y D cohort, stub(Bacon_) robust ddetail
+
+// Notice that we don't need to include the time variable. This is because we converted the dataset to a panel with the xtset command.
+
+// So the way the bacondecomp command works is that you call the outcome and then the treatment and cohort variables, then you have come options. stub() will create variables with the decomposition results
+// and ddetail will provide additional details
 
 // List the "stub" variables/tables you created
 list Bacon_T Bacon_C Bacon_B Bacon_cgroup if !mi(Bacon_T)
  
 
+
  
-
-
 ******************************************
 *                                        *
 *                                        *
@@ -131,6 +135,8 @@ replace post0 = 0
 
 // Run the stacked event study
 stackedev outcome  pre7 pre6 pre5 pre4 pre3 pre1 pre2 post0 post1 post2 post3 post4 post5 , cohort(treat_year) time(year)  never_treat(no_treat) unit_fe(state) clust_unit(state) covariates(cov)
+
+// Notice that this command is pretty much a regression command. All you have to specify is are the cohort, time, never treated, unit fixed effects, cluster unit, and desired covariates (separately from the leads and lags)
 
 event_plot, default_look graph_opt(xtitle("Periods since the event") ytitle("Average effect") xlabel(-8(1)5) ///
 		title("stackedev")) stub_lag(post#) stub_lead(pre#)  together 
@@ -257,6 +263,8 @@ replace _nfd2=0 if _nfd==.
 // Apply bacondecomp to this setting
 
 
+ 
+
 
  
 ******************************************
@@ -264,6 +272,4 @@ replace _nfd2=0 if _nfd==.
 ****************************************** 
 
 // Apply stackedev to this setting
-
-
 
