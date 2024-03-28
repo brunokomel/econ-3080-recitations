@@ -9,6 +9,9 @@
 // Date: 3/21/24
 // By: Bruno Kömel
 
+// Examples from: https://asjadnaqvi.github.io/DiD/docs/code/06_06_did_imputation/
+
+
 clear
 
 local units = 30

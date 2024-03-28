@@ -1,16 +1,15 @@
 **************************************
 *                                    *
 *                                    *
-*           Recitation 10            *
+*           Recitation 11            *
 *                                    *
 *                                    *
 **************************************
 
-// Date: 3/21/24
+// Date: 3/28/24
 // By: Bruno Kömel
 
 // Examples from: https://asjadnaqvi.github.io/DiD/docs/code/06_06_did_imputation/
-
 
 clear
 
@@ -40,14 +39,14 @@ gen rel_time	= .     // time - first_treat
 
 levelsof id, local(lvls) //randomly assigning observations into cohorts
 foreach x of local lvls {
-	local chrt = runiformint(0,2)	// This defines the number of cohorts
+	local chrt = runiformint(0,5)	
 	replace cohort = `chrt' if id==`x'
 }
 
 levelsof cohort , local(lvls)  
 foreach x of local lvls {
 	
-	local eff = runiformint(2,10) // Creates a random treatment effect between 2 and 10
+	local eff = runiformint(2,10)
 		replace effect = `eff' if cohort==`x'
 			
 	local timing = runiformint(`start',`end' + 20)	// 
@@ -68,83 +67,34 @@ recode gvar (. = 0)
 ******************************************
 *                                        *
 *                                        *
-*              bacondecomp               *
+*             did_imputation             *
 *                                        *
 *                                        *
 ******************************************
 
-// ssc install bacondecomp, replace
-reghdfe Y D, abs(cohort t) //This is running a two-way fixed effect regression with cohort and time fixed effects (abs stands for "absorb" that's because the fixed effects model absorves the movement within each category)
+xtline Y, overlay legend(off)
 
-bacondecomp Y D cohort, stub(Bacon_) robust ddetail
+// ssc install did_imputation
 
-// Notice that we don't need to include the time variable. This is because we converted the dataset to a panel with the xtset command.
+did_imputation Y id t first_treat, horizons(0/10) pretrend(10) // This tells Stata to do the imputation methodology where Y is the outcome avriable, id is the unique unit id, t is the running time variable, and first_treat indicates the first date that the specific unit was treated
+estimates store bjs 
+ event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) /// check the documentation if you want to edit the event_plot, there are other options :)
+			
 
-// So the way the bacondecomp command works is that you call the outcome and then the treatment and cohort variables, then you have come options. stub() will create variables with the decomposition results
-// and ddetail will provide additional details
+// This minn(0) option is super important it says what is the minimum number of observations that you want to require from each group? Any group below that minimum number will have its coefficient supressed 
 
-// List the "stub" variables/tables you created
-list Bacon_T Bacon_C Bacon_B Bacon_cgroup if !mi(Bacon_T)
+did_imputation Y id t first_treat, horizons(0/10) pretrend(10) minn(0)
+estimates store es 
+ event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) ///
+
  
-
-
- 
-******************************************
-*                                        *
-*                                        *
-*               stackedev                *
-*                                        *
-*                                        *
-******************************************
-
-
-use https://github.com/joshbleiberg/stacked_event/raw/main/state_policy_effect.dta, clear
-
-drop ref pre* post*
-
-tab rel, gen(rel_)
-
-rename rel_1 pre7
-rename rel_2 pre6
-rename rel_3 pre5
-rename rel_4 pre4
-rename rel_5 pre3
-rename rel_6 pre2
-rename rel_7 pre1
-rename rel_8 post0
-rename rel_9 post1
-rename rel_10 post2
-rename rel_11 post3
-rename rel_12 post4
-rename rel_13 post5
-
-// label variable pre8 "Pre 8"
-label variable pre7 "Pre 7"
-label variable pre6 "Pre 6"
-label variable pre5 "Pre 5"
-label variable pre4 "Pre 4"
-label variable pre3 "Pre 3"
-label variable pre2 "Pre 2"
-label variable pre1 "Pre 1"
-label variable post0 "Base Year"
-label variable post1 "Post 1"
-label variable post2 "Post 2"
-label variable post3 "Post 3"
-label variable post4 "Post 4"
-label variable post5 "Post 5"
-
-
-replace post0 = 0
-
-// Run the stacked event study
-stackedev outcome  pre7 pre6 pre5 pre4 pre3 pre1 pre2 post0 post1 post2 post3 post4 post5 , cohort(treat_year) time(year)  never_treat(no_treat) unit_fe(state) clust_unit(state) covariates(cov)
-
-// Notice that this command is pretty much a regression command. All you have to specify is are the cohort, time, never treated, unit fixed effects, cluster unit, and desired covariates (separately from the leads and lags)
-
-event_plot, default_look graph_opt(xtitle("Periods since the event") ytitle("Average effect") xlabel(-8(1)5) ///
-		title("stackedev")) stub_lag(post#) stub_lead(pre#)  together 
-
-
+ // Just as a comparison
+did_imputation Y id t first_treat, horizons(0/10) pretrend(10) minn(20) 
+estimates store bjs 
+ event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) ///
+	
+	
+// What the did_imputation is doing is following Borusyak et al. (2021) where to deal with heterogeneity of treatment effects (in a staggered treatment scenario), the efficient robust estimator is implemented by using an "imputation" procedure, where first the unit and period fixed effects (alpha_hat_i and beta_hat_i) are fitted by regressions using unreated observations only. Second, these fixed effects are used to impute the untreated potential outcomes and therefore obtain the estimated treatment effects \tau_hat_i_t = ... for each treated observation. Finally, a weighted sum of these treatment effect estimates is taken."
 
 
 ******************************************
@@ -159,7 +109,7 @@ event_plot, default_look graph_opt(xtitle("Periods since the event") ytitle("Ave
 
  use"https://raw.githubusercontent.com/LOST-STATS/LOST-STATS.github.io/master/Model_Estimation/Data/Event_Study_DiD/bacon_example.dta", clear
 
- *****************************************
+******************************************
 *                                        *
 *             Data Cleaning              *
 *                                        *
@@ -258,21 +208,86 @@ replace first_treat=0 if _nfd==. & treated==0
  
 gen _nfd2=_nfd
 replace _nfd2=0 if _nfd==.
-  
+
+
+
 ******************************************
 *              Exercise 1                *
-****************************************** 
+******************************************   
 
-// Apply bacondecomp to this setting
+//Use did_imputation to visualize the event study
 
+// First use a time horizon of -20 and +20 (so 20 years on either side). Store these results.
 
+ // did_imputation gives in similar results
+ did_imputation asmrs stfip  year _nfd , horizons(0/20) pretrend(20) minn(0) 
+ estimates store es1 
+ event_plot, default_look graph_opt(xtitle("Years since the event") ytitle("Coefficients") xlabel(-20(5)20) )   
  
+// Secondly, use a time horizon of -10 and +10 (so 10 years on either side). Store these results.
+
+   did_imputation asmrs stfip  year _nfd , horizons(0/10) pretrend(10) minn(0) 
+ estimates store es2 
+ event_plot, default_look graph_opt(xtitle("Years since the event") ytitle("Coefficients") xlabel(-10(5)10) )   
+  
+  // Tabulate these results so they look nice.
+	esttab es1 es2
 
 
- 
-******************************************
-*              Exercise 2                *
-****************************************** 
+	
 
-// Apply stackedev to this setting
+	
+
+**********************************
+*                                *
+*                                *
+*             Tables             *
+*            Exercise            *
+*                                *
+*                                *
+**********************************
+
+eststo clear
+
+use https://github.com/scunning1975/mixtape/raw/master/card.dta, clear
+
+// You may find it helpful to create a global for the controls.
+
+global controls_ed exper black south married smsa
+
+* 1. Run an OLS regression of log wages (lwage) on education (educ) controlling for experience (exper), race (black), region (south), marital status (married), and smsa 
+* Store your estimates to put it on a table
+
+* OLS estimate of schooling (educ) on log wages
+eststo ols: reg lwage  educ  $controls_ed
+
+// The stuff below is not important
+* First stage regression of schooling (educ) on all covariates and the college and the county variable
+reg educ nearc4 $controls_ed
+
+* Reduced form
+reg lwage nearc4 $controls_ed
+
+* F test on the excludability of college in the county from the first stage regression.
+test nearc4
+
+* 2. Use proximity to school (nearc4) as an instrument for the education (educ) and find the 2SLS estimate of the effect of schooling (educ) on log wages using "college in the county" as an instrument for schooling
+eststo iv: ivreg2 lwage (educ=nearc4) $controls_ed, first 
+
+* 3. Use the JIVE estimator to estimate the coefficient on education (same as part 2)
+eststo jive: jive lwage (educ= nearc4) $controls_ed, robust 
+
+* 4. Put your results in a table and export them to latex
+
+global latex "/Users/brunokomel/Library/CloudStorage/Dropbox/Apps/Overleaf/Recitation - Tables"
+cd "${latex}"
+
+esttab ols iv jive using "table2.tex",  sfmt(4) b(3) se(2) keep(educ)  label   ///
+star(* 0.10 ** 0.05 *** 0.01) booktabs ///
+varlabel(educ "Education") mtitles("OLS" "IV" "JIVE") scalars("N Observations") ///
+fragment replace
+
+* Plot the coefficients as if you were to present these results
+
+coefplot (ols, aseq(OLS) label(OLS))  (iv, aseq(IV)label(IV)) (jive, aseq(JIVE) label(JIVE))  , xline(0) vertical keep(educ)  ciopts(recast(rcap)) aseq swapnames
 
