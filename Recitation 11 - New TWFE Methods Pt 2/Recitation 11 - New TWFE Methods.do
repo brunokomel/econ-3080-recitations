@@ -85,13 +85,13 @@ estimates store bjs
 
 did_imputation Y id t first_treat, horizons(0/10) pretrend(10) minn(0)
 estimates store es 
- event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) ///
+ event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) 
 
  
  // Just as a comparison
 did_imputation Y id t first_treat, horizons(0/10) pretrend(10) minn(20) 
 estimates store bjs 
- event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) ///
+ event_plot, default_look graph_opt(xtitle("Days since the event") ytitle("Coefficients") xlabel(-10(1)10)) 
 	
 	
 // What the did_imputation is doing is following Borusyak et al. (2021) where to deal with heterogeneity of treatment effects (in a staggered treatment scenario), the efficient robust estimator is implemented by using an "imputation" procedure, where first the unit and period fixed effects (alpha_hat_i and beta_hat_i) are fitted by regressions using unreated observations only. Second, these fixed effects are used to impute the untreated potential outcomes and therefore obtain the estimated treatment effects \tau_hat_i_t = ... for each treated observation. Finally, a weighted sum of these treatment effect estimates is taken."
@@ -279,6 +279,9 @@ eststo jive: jive lwage (educ= nearc4) $controls_ed, robust
 
 * 4. Put your results in a table and export them to latex
 
+// To see all stored estimates
+estimates dir 
+
 global latex "/Users/brunokomel/Library/CloudStorage/Dropbox/Apps/Overleaf/Recitation - Tables"
 cd "${latex}"
 
@@ -290,4 +293,19 @@ fragment replace
 * Plot the coefficients as if you were to present these results
 
 coefplot (ols, aseq(OLS) label(OLS))  (iv, aseq(IV)label(IV)) (jive, aseq(JIVE) label(JIVE))  , xline(0) vertical keep(educ)  ciopts(recast(rcap)) aseq swapnames
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
