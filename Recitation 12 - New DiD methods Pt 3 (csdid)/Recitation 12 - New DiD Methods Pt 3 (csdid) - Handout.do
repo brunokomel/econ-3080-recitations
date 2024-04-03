@@ -221,93 +221,18 @@ replace _nfd2=0 if _nfd==.
 
 // use csdid to calculate the corrected coefficient (create a window going from 6 periods before to 10 periods after)
 
-csdid asmrs, ivar(stf) time(year) gvar(_nfd2) notyet // can remove the notyet option as well, but the results change a bit
-estat all 
-estimates store cs1
- 
-estat event, window(-6 10) estore(cs1) // This tells Stata to store only the coefficients related to the 10 years prior and the 10 years after the treatments
 
-estat event  // Notice that the average post effect is around -8. This is significantly different from the -3.07 we saw earlier. This is because when the treatment changes the time trends (the slope of the line) then the twoway fixed effect model biases our estimates toward zero.
 
-// notice also how the Post_avg changes depending on the window chosen
- 
 //plot the csdid plot
- 
-csdid_plot
-
-// Alternatively:
-event_plot cs1, default_look graph_opt(xtitle("Periods since the event") ytitle("Average effect") ///
-	title("csdid") xlabel(-6(1)10)) stub_lag(Tp#) stub_lead(Tm#) together
 
 
 // Create a Naive event study estimator for this setting, and plot it alongside the csdid results
-rename _Texp_1 pre_6
-rename _Texp_2 pre_5
-rename _Texp_3 pre_4
-rename _Texp_4 pre_3
-rename _Texp_5 pre_2
-//rename _Texp_6 pre_1
-rename _Texp_7 post_0
-rename _Texp_8 post_1
-rename _Texp_9 post_2
-rename _Texp_10 post_3
-rename _Texp_11 post_4
-rename _Texp_12 post_5
-rename _Texp_13 post_6
-rename _Texp_14 post_7
-rename _Texp_15 post_8
-rename _Texp_16 post_9
-rename _Texp_17 post_10
-
-eststo es1: reghdfe asmrs pre* post* pcinc asmrh cases,abs(stfips year) //excluding period 6 as the ommitted period
-
-// Also tabulate these results so they look nice.
-	esttab es1 cs1 
-
-// To make it actually look nice we'll need to rename the variables:
-rename pre_6 Tm6
-rename pre_5 Tm5
-rename pre_4 Tm4
-rename pre_3 Tm3
-rename pre_2 Tm2
-//rename pre_1 Tm1
-rename post_0 Tp0
-rename post_1 Tp1
-rename post_2 Tp2
-rename post_3 Tp3
-rename post_4 Tp4
-rename post_5 Tp5
-rename post_6 Tp6
-rename post_7 Tp7
-rename post_8 Tp8
-rename post_9 Tp9
-rename post_10 Tp10
-
-gen Tm1 = 0
-
-
-eststo es2: reghdfe asmrs Tm* Tp* pcinc asmrh cases,abs(stfips year) 
-
-esttab es2 cs1  , sfmt(4) b(3) se(2) keep(Tm* Tp*)  label   ///
-star(* 0.10 ** 0.05 *** 0.01)  ///
-varlabel(Tm6 "T - 6" Tm5 "T - 5" Tm4 "T - 4" Tm3 "T - 3" Tm2 "T - 2" Tm1 "T - 1" Tp0 "Treatment Period" ///
-Tp1 "T + 1" Tp2 "T + 2"  Tp3 "T + 3" Tp4 "T + 4" Tp5 "T + 5" Tp6 "T + 6" Tp7 "T + 7" Tp8 "T + 8" Tp9 "T + 9" Tp10 "T + 10"  ) ///
- mtitles("Naive" "CS") scalars("N Observations") 
-
-
-* Plot the coefficients as if you were to present them
-
-event_plot es1 cs1, default_look noautolegend graph_opt(xtitle("Periods since the event") ytitle("Average effect") ///
-title("Event Study Comparison") xlabel(-6(1)10) legend(order(1 "Naive" 3 "Callaway-Sant'Anna") rows(3) region(style(none)) )) ///
-stub_lag(post_# Tp#) stub_lead(pre_# Tm#) together
-	
-//  Just a different event-study plot
-event_plot es1 cs1, default_look noautolegend  ciplottype(rcap) graph_opt(xtitle("Periods since the event") /// 
-ytitle("Average effect") title("Event Study Comparison") xlabel(-6(1)10) legend(order(1 "Naive" 3 "Callaway-Sant'Anna") rows(3) ///
-region(style(none)) )) stub_lag(post_# Tp#) stub_lead(pre_# Tm#) together
 
 
 
+
+
+// Tabulate these results so they look nice.
 
 
 
