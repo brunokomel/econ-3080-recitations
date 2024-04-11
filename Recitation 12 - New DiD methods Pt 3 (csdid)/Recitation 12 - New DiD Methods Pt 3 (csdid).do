@@ -1,12 +1,12 @@
 **************************************
 *                                    *
 *                                    *
-*           Recitation 11            *
+*           Recitation 12            *
 *                                    *
 *                                    *
 **************************************
 
-// Date: 3/28/24
+// Date: 4/4/24
 // By: Bruno Kömel
 
 // Examples from: https://asjadnaqvi.github.io/DiD/docs/code/06_06_did_imputation/
@@ -102,13 +102,16 @@ reghdfe Y pre* post*, abs(id t)
 gen rel_time2 = rel_time 
 replace rel_time2 = 0 if rel_time == .
 
+
+// Let's see what happens when we use only one group (gvar 24) to make a valid DiD comparison
 eststo es1: reghdfe Y pre_* post_*, abs(id t) ,if (gvar == 0 | gvar == 24) & (rel_time2 > -11 & rel_time2 < 11 )
 
 
 event_plot es1, default_look graph_opt(xtitle("Periods since the event") ytitle("Average effect") ///
 	title("Naive Event Study") xlabel(-10(1)10)) stub_lag(post_#) stub_lead(pre_#) together
 
-	
+
+// Now let's use all of the groups
 eststo es2: reghdfe Y pre_* post_*, abs(id t) ,if  (rel_time2 > -11 & rel_time2 < 11 )
 
 
@@ -128,6 +131,8 @@ event_plot es2, default_look graph_opt(xtitle("Periods since the event") ytitle(
 // ssc install event_plot, replace
 // ssc install bacondecom, replace
 reghdfe Y D, abs(id t) //This is running a two-way fixed effect regression with cohort and time fixed effects (abs stands for "absorve" that's because the fixed effects model absorves the movement within each category)
+
+// average treatment effect = 77.59
 
 csdid Y, ivar(id) time(t) gvar(gvar) notyet // here ivar is the panel identifier (e.g. country), time is something like the 'year' or 'month' (the running variable); gvar is the variable identifying groups/cohorts , notyet requests that the model use only observations never treated and not yet treated in the control group
 
@@ -223,7 +228,7 @@ replace _nfd2=0 if _nfd==.
 
 csdid asmrs, ivar(stf) time(year) gvar(_nfd2) notyet // can remove the notyet option as well, but the results change a bit
 estat all 
-estimates store cs1
+
  
 estat event, window(-6 10) estore(cs1) // This tells Stata to store only the coefficients related to the 10 years prior and the 10 years after the treatments
 

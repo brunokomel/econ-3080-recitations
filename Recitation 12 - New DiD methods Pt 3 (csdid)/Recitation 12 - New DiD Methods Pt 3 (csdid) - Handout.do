@@ -1,12 +1,12 @@
 **************************************
 *                                    *
 *                                    *
-*           Recitation 11            *
+*           Recitation 12            *
 *                                    *
 *                                    *
 **************************************
 
-// Date: 3/28/24
+// Date: 4/4/24
 // By: Bruno Kömel
 
 // Examples from: https://asjadnaqvi.github.io/DiD/docs/code/06_06_did_imputation/
