@@ -36,6 +36,8 @@ use "https://media.githubusercontent.com/media/mcaceresb/stata-pretrends/main/da
 
 reghdfe l_poor_reg_rate Lead_D4_plus Lead_D3 Lead_D2 D0 Lag_D1 Lag_D2 Lag_D3_plus, absorb(v_id year) cluster(v_id) dof(none)
 
+coefplot, vertical
+
 // The package has two subcommands:
 // 1. power
 // 2. delta() option
@@ -44,7 +46,9 @@ reghdfe l_poor_reg_rate Lead_D4_plus Lead_D3 Lead_D2 D0 Lag_D1 Lag_D2 Lag_D3_plu
 
 // Alternatively, the user can specify a hypothesized violations of parallel trends—the package then creates a plot to visualize the results, and reports various statistics related to the hypothesized difference in trend. The user can specify a hypothesized linear pre-trend via the slope() option, or provide an arbitrary violation of parallel trends via the delta() option.
 
-pretrends power 0.5, pre(1/3) post(4/7)
+pretrends power 0.95, pre(1/3) post(4/7)
+
+pretrends power 0.5, pre(1 2 3) post(4 5 6 7)
 
 return list
 // In the command above, the option pre(1/3) tells the package that the pre-treatment event-study coefficients are in positions 1 through 3 in our regression results. (The package assumes that the period before the event-study is normalized to zero and omitted from the regression.) Likewise, the option post(4/7) tells the package that the post-treatment coefficients are in positions 4 through 7.
@@ -86,10 +90,10 @@ pretrends, pre(1/3) post(4/7)   deltatrue(deltaquad) coefplot
 
 * Install here coefplot, ftools, reghdfe, plot scheme
 local github https://raw.githubusercontent.com
-ssc install coefplot,      replace
-ssc install ftools,        replace
-ssc install reghdfe,       replace
-net install scheme-modern, replace from(`github'/mdroste/stata-scheme-modern/master)
+// ssc install coefplot,      replace
+// ssc install ftools,        replace
+// ssc install reghdfe,       replace
+// net install scheme-modern, replace from(`github'/mdroste/stata-scheme-modern/master)
 set scheme modern
 
 * Load data
@@ -190,3 +194,18 @@ staggered complaints, i(uid) t(period) g(first_trained) estimand(simple) cs
 
 * Calculate Sun and Abraham estimator for the simple weighted average
 staggered complaints, i(uid) t(period) g(first_trained) estimand(simple) sa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

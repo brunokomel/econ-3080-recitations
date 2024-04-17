@@ -22,7 +22,7 @@
 // By Dmitry Arkhangelsky, Susan Athey, David A. Hirshberg, Guido W. Imbens, and Stefan Wager
 // https://www.aeaweb.org/articles?id=10.1257/aer.20190159
 
-cd "/Users/brunokomel/Library/Mobile Documents/com~apple~CloudDocs/Documents/Pitt/Year_2/TA - Econ 3080/Recitations/Recitation 12 - Synthetic DiD"
+cd "/Users/brunokomel/Documents/Pitt/Year 3/TA - Econ 3080/econ-3080-recitations/Recitation 14 - Synthetic DiD"
 
 global seed_num = 824 
 
@@ -224,8 +224,8 @@ local scheme = "gg_tableau" ;
 sdid bmprison state year treated , vce(placebo) reps(100) seed($seed_num) method(sc) g1on
      graph g1_opt(xtitle("") scheme(`scheme')) 
      g2_opt( ytitle("Packs per capita") 
-            xtitle("") text(15000 1995 "ATT = `e(ATT)'" " SE = (`e(se)')") scheme(`scheme'))
-    graph_export(sdid_, .png);
+            xtitle("") text(15000 1995 "ATT = `e(ATT)'" " SE = (`e(se)')") scheme(`scheme'));
+    //graph_export(sdid_, .png);
 	
 #delimit cr
 
@@ -238,9 +238,9 @@ local scheme = "gg_tableau" ;
 sdid bmprison state year treated , vce(placebo) reps(100) seed($seed_num) method(sdid) g1on
      graph g1_opt(xtitle("") scheme(`scheme')) 
      g2_opt( ytitle("Packs per capita") 
-            xtitle("") text(15000 1995 "ATT = `e(ATT)'" " SE = (`e(se)')") scheme(`scheme'))
-    graph_export(sdid_, .png);
+            xtitle("") text(15000 1995 "ATT = `e(ATT)'" " SE = (`e(se)')") scheme(`scheme'));
+    //graph_export(sdid_, .png);
 	
 #delimit cr
         
-// 3. Marvel at how much easier and cleaner this was. (And notice the omission of an ATT in the Recitation 6 file)
+// 3. Marvel at how much easier and cleaner this was. (And notice the omission of an ATT in the Recitation 5 file)

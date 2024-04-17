@@ -1,12 +1,12 @@
 **************************************
 *                                    *
 *                                    *
-*           Recitation 13            *
+*           Recitation 14            *
 *                                    *
 *                                    *
 **************************************
 
-// Date: 4/21/23
+// Date: 4/18/24
 // By: Bruno Kömel (ish)
 
 ***************************************
@@ -19,6 +19,7 @@
 *                                     *
 ***************************************
 
+// webuse set
 webuse fakesurvey, clear
 
 describe
@@ -57,7 +58,8 @@ vl substitute idemographics = i.demographics //creating a set of binary variable
 vl substitute ifactors = i.factors //creating a set of binary variables from the categorical variables in factors 
 di "$ifactors"
 
-
+vl list
+vl dir
 
 // Then, we should split our data into two groups. We'll create a training dataset (which we use to come up with our model) and a testing dataset, which we'll use to test the prediction model we came up with.
 
@@ -78,7 +80,7 @@ cvplot
 
 eststo cv
 
-lassoknots , display (nonzero osr2 bic) // This outputs information on all the models that were fits
+lassoknots , display (nonzero osr2 bic) // This outputs information on all the models that were fit
 
 // We may want to choose the model with lowest BIC (here model 14)
 
@@ -149,15 +151,16 @@ vl set
 vl substitute order = i.order##(c.mage#c.fedu c.mage##c.monthslb c.fedu##c.fedu)
 vl substitute married = i.mmarried#(c.mage##c.mage)
 
-dsregress bweight i.msmoke medu, ///
+dsregress bweight i.msmoke medu, /// dsregress stands for double-selection lasso regression
 controls(i.foreign i.alcohol##i.prenatal1 $married $order)
 
 // Notice 2 things. There were 104 total "eligible" control variables, but lasso selected 15 of them. 
 // Second, the result here is that the more a mother smokes, the less the baby weighs (also mother's education is not significant)
 
-// Now say that we think that mother's education is endogenous. Then we could use the cross-fit partialling out method:
+// Now say that we think that mother's education is endogenous. Then we could use the cross-fit partialling out method: (xpoivregress stands for Cross-fit partialing-out lasso instrumental-variables regression)
 
 xpoivregress bweight i.msmoke (medu = $medu), controls(i.foreign i.alcohol##i.prenatal1 $married $order) // where $medu refers to a set of instruments for mother's education but we don't have that in this data, I just wanted to give an example :) 
+
 
 //if we wanted instead to fit a model for low birth weight using the binary variable (lbweight) as the outcome, we could use a double-selection lasso logistic regression (or partialling out, but we just did that)
 
